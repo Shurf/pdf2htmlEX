@@ -51,7 +51,7 @@ public:
             return iter->second;
         }
 
-        long long id = value_map.size();
+        long long id = (long long)new_value*100;//value_map.size();
         double v = value_map.insert(iter, std::make_pair(new_value, id))->first;
         if(actual_value_ptr != nullptr)
             *actual_value_ptr = v;

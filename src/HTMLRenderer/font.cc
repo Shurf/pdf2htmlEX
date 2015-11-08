@@ -40,6 +40,8 @@
 #include <Gfx.h>
 #endif
 
+#include <sys/time.h>
+
 namespace pdf2htmlEX {
 
 using std::min;
@@ -824,7 +826,15 @@ const FontInfo * HTMLRenderer::install_font(GfxFont * font)
     if(iter != font_info_map.end())
         return &(iter->second);
 
-    long long new_fn_id = font_info_map.size(); 
+    long            ms; // Milliseconds
+    time_t          s;  // Seconds
+    timeval         spec;
+    gettimeofday(&spec, NULL);
+    s  = spec.tv_sec;
+    ms = round(spec.tv_usec / 1000); // Convert nanoseconds to milliseconds
+    
+    
+    long long new_fn_id = (unsigned)s*1000*1000 + ms*1000 + font_info_map.size();
 
     auto cur_info_iter = font_info_map.insert(make_pair(fn_id, FontInfo())).first;
 
