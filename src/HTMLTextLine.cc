@@ -244,20 +244,28 @@ void HTMLTextLine::dump_text(ostream & out)
                 {
                     bool done = false;
                     // check if the offset is equivalent to a single ' '
-                    if(!(state_iter1->hash_umask & State::umask_by_id(State::WORD_SPACE_ID)))
+                    if(!(state_iter1->hash_umask & State::umask_by_id(State::WORD_SPACE_ID)) && cur_text_idx > 0 && text[cur_text_idx - 1] == ' ')
                     {
                         double space_off = state_iter1->single_space_offset();
-                        if(std::abs(target - space_off) <= param.h_eps)
+                        int ws_count;
+                        for(ws_count = 1; ws_count <= 5; ws_count++)
                         {
-                            Unicode u = ' ';
-                            writeUnicodes(out, &u, 1);
-                            actual_offset = space_off;
-                            done = true;
+                            if(std::abs(target - ws_count*space_off) <= param.h_eps)
+                            {
+                                int i;
+                                Unicode u = ' ';
+                                for(i = 0; i < ws_count; i++)
+                                    writeUnicodes(out, &u, 1);
+                                actual_offset = space_off*ws_count;
+                                done = true;
+                                break;
+                            }
                         }
+                        
                     }
 
                     // finally, just dump it
-                    if(!done)
+                    /*if(!done)
                     {
                         long long wid = all_manager.whitespace.install(target, &actual_offset);
 
@@ -271,7 +279,7 @@ void HTMLTextLine::dump_text(ostream & out)
                             out << "<span class=\"" << CSS::WHITESPACE_CN
                                 << ' ' << CSS::WHITESPACE_CN << wid << "\">" << (target > (threshold - EPS) ? " " : "") << "</span>";
                         }
-                    }
+                    }*/
                 }
                 dx = target - actual_offset;
                 ++ cur_offset_iter;
