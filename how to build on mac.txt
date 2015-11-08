@@ -1,0 +1,6 @@
+brew install pdf2htmlex
+
+export PKG_CONFIG_PATH=/usr/local/Cellar/pdf2htmlex/0.13.6_4/fontforge/lib/pkgconfig
+export PATH=$PATH:/usr/local/Cellar/pdf2htmlex/0.13.6_4/fontforge/bin
+cmake .
+make
